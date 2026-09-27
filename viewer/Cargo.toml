@@ -1,0 +1,79 @@
+[package]
+name = "viewer"
+version = "0.1.0"
+edition = "2024"
+rust-version = "1.87"
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+leptos = "0.8"
+leptos_meta = "0.8"
+leptos_router = "0.8"
+thaw = "0.5.0-beta"
+serde = { version = "1", features = ["derive"] }
+urlencoding = "2"
+
+# Client (wasm) only
+console_error_panic_hook = { version = "0.1", optional = true }
+# Must exactly match the wasm-bindgen bundled with cargo-leptos 0.2.35.
+wasm-bindgen = { version = "=0.2.100", optional = true }
+
+# Server only
+anyhow = { version = "1", optional = true }
+axum = { version = "0.8", optional = true }
+leptos_axum = { version = "0.8", optional = true }
+mime_guess = { version = "2", optional = true }
+pulldown-cmark = { version = "0.13", optional = true }
+tantivy = { version = "0.25", optional = true }
+tokio = { version = "1", features = ["full"], optional = true }
+toml = { version = "1", optional = true }
+tracing = { version = "0.1", optional = true }
+tracing-subscriber = { version = "0.3", optional = true }
+walkdir = { version = "2", optional = true }
+
+[features]
+hydrate = [
+    "leptos/hydrate",
+    "thaw/hydrate",
+    "dep:console_error_panic_hook",
+    "dep:wasm-bindgen",
+]
+ssr = [
+    "leptos/ssr",
+    "leptos_meta/ssr",
+    "leptos_router/ssr",
+    "thaw/ssr",
+    "dep:anyhow",
+    "dep:axum",
+    "dep:leptos_axum",
+    "dep:mime_guess",
+    "dep:pulldown-cmark",
+    "dep:tantivy",
+    "dep:tokio",
+    "dep:toml",
+    "dep:tracing",
+    "dep:tracing-subscriber",
+    "dep:walkdir",
+]
+
+[profile.wasm-release]
+inherits = "release"
+opt-level = "z"
+lto = true
+codegen-units = 1
+panic = "abort"
+
+[package.metadata.leptos]
+output-name = "viewer"
+site-root = "target/site"
+site-pkg-dir = "pkg"
+style-file = "style/main.css"
+site-addr = "127.0.0.1:3000"
+reload-port = 3001
+bin-features = ["ssr"]
+bin-default-features = false
+lib-features = ["hydrate"]
+lib-default-features = false
+lib-profile-release = "wasm-release"

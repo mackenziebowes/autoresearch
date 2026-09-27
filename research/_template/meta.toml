@@ -1,0 +1,7 @@
+# Copy this directory to research/<YYYY-MM-DD-short-slug>/ for a new run.
+title = "What question this run investigated"
+date = 2026-09-27
+tags = ["example"]
+# draft | running | complete | abandoned
+status = "draft"
+summary = "One or two sentences on the finding."

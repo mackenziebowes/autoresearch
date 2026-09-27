@@ -1,0 +1,103 @@
+/* Layout and markdown typography only; components are styled by Thaw.
+   Colours come from Thaw's theme tokens so the light/dark toggle applies. */
+
+html, body { margin: 0; }
+
+.app { min-height: 100vh; }
+
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 10px 24px;
+  background: var(--colorNeutralBackground1);
+  border-bottom: 1px solid var(--colorNeutralStroke2);
+}
+.brand {
+  font-weight: 600;
+  font-size: 16px;
+  color: var(--colorNeutralForeground1);
+  text-decoration: none;
+  white-space: nowrap;
+}
+.search { display: flex; gap: 8px; flex: 1; max-width: 560px; }
+.search-input { flex: 1; min-width: 0; }
+
+.content {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 24px;
+  color: var(--colorNeutralForeground1);
+}
+.content a { color: var(--colorBrandForeground1); }
+.filters { flex-wrap: wrap; }
+.filters a, .tags a { text-decoration: none; }
+.tags { flex-wrap: wrap; }
+.count { font-size: 14px; font-weight: 600; margin: 0; color: var(--colorNeutralForeground2); }
+
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(320px, 100%), 1fr));
+  gap: 16px;
+}
+/* Thaw cards default to a centred 720px box; let the grids size them. */
+.cards .thaw-card, .run-body .thaw-card { margin: 0; width: auto; }
+.run-title { font-weight: 600; font-size: 15px; text-decoration: none; }
+.snippet {
+  font-size: 13px;
+  color: var(--colorNeutralForeground2);
+  border-left: 3px solid var(--colorNeutralStroke1);
+  padding-left: 8px;
+}
+.snippet b { color: var(--colorNeutralForeground1); background: var(--colorBrandBackground2); border-radius: 2px; }
+
+.run-header h1 { margin: 0 0 8px; font-size: 26px; }
+.run-header .summary { display: block; margin: 12px 0; }
+.slug { font-family: var(--fontFamilyMonospace); color: var(--colorNeutralForeground3); }
+.run-body {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 260px;
+  gap: 16px;
+  align-items: start;
+}
+.report-name { font-family: var(--fontFamilyMonospace); color: var(--colorNeutralForeground3); }
+.file-list { margin: 0; padding-left: 18px; font-family: var(--fontFamilyMonospace); font-size: 12px; line-height: 1.8; word-break: break-all; }
+
+@media (max-width: 800px) {
+  .header { flex-wrap: wrap; padding: 10px 16px; }
+  .search { order: 3; max-width: none; flex-basis: 100%; }
+  .content { padding: 16px; }
+  .run-body { grid-template-columns: minmax(0, 1fr); }
+}
+
+/* Rendered markdown */
+.prose { line-height: 1.6; font-size: 15px; overflow-wrap: anywhere; }
+.prose h1, .prose h2, .prose h3 { line-height: 1.25; margin: 1.4em 0 0.5em; }
+.prose h1 { font-size: 1.6em; }
+.prose h2 { font-size: 1.3em; border-bottom: 1px solid var(--colorNeutralStroke2); padding-bottom: 4px; }
+.prose img { max-width: 100%; }
+.prose code {
+  font-family: var(--fontFamilyMonospace);
+  font-size: 0.9em;
+  background: var(--colorNeutralBackground3);
+  padding: 1px 4px;
+  border-radius: 4px;
+}
+.prose pre {
+  background: var(--colorNeutralBackground3);
+  padding: 12px;
+  border-radius: 6px;
+  overflow-x: auto;
+}
+.prose pre code { background: none; padding: 0; }
+.prose table { border-collapse: collapse; display: block; overflow-x: auto; }
+.prose th, .prose td { border: 1px solid var(--colorNeutralStroke1); padding: 4px 10px; }
+.prose blockquote {
+  margin: 0;
+  padding-left: 12px;
+  border-left: 3px solid var(--colorNeutralStroke1);
+  color: var(--colorNeutralForeground2);
+}
