@@ -49,8 +49,9 @@ html, body { margin: 0; }
 .snippet {
   font-size: 13px;
   color: var(--colorNeutralForeground2);
-  border-left: 3px solid var(--colorNeutralStroke1);
-  padding-left: 8px;
+  background: var(--colorNeutralBackground2);
+  border-radius: var(--borderRadiusMedium);
+  padding: 6px 8px;
 }
 .snippet b { color: var(--colorNeutralForeground1); background: var(--colorBrandBackground2); border-radius: 2px; }
 
