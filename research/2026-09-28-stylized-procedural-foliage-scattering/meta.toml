@@ -1,5 +1,5 @@
 title = "Stylized procedural foliage and scattering"
 date = 2026-09-28
-tags = ["gamedev", "godot", "blender", "geometry-nodes", "procedural", "foliage", "stylized", "scattering", "shaders"]
+tags = ["gamedev", "godot", "blender", "geometry-nodes", "procedural", "foliage", "stylized", "scattering", "shaders", "textures"]
 status = "complete"
-summary = "Grass, bushes, ferns and flowers can reuse the tree pipeline with a different construction primitive per category; at a 45° camera terrain colour carries the lawn, and placement should be layered, world-cell seeded and clustered via a small custom Godot BiomeArea tool rather than an existing addon."
+summary = "Grass, bushes, ferns and flowers can reuse the tree pipeline with a different construction primitive per category; at a 45° camera terrain colour carries the lawn, and placement should be layered, world-cell seeded and clustered via a small custom Godot BiomeArea tool rather than an existing addon. A 2026-09-28 addendum adds build-tested lessons on painted tileable ground textures (sand, dune, meadow): judge lit at the game camera, bake relief with the real sun, keep distinct features out of the tile."

@@ -474,3 +474,80 @@ The scatterer is also a better evaluation surface than single assets. The world-
 - A lawn tuft over terrain paint at the front-lit shot (the density question).
 - A 0.2×-scaled tree bush with a skirt (the ground-contact question).
 - One baked `meadow` polygon, checked for local stability after a vertex drag.
+
+---
+
+## Addendum (2026-09-28): painted ground textures, first-hand
+
+What follows was learned building the seaside ground textures for this project (board cards G1/G1a; code in `FarmGameGodot/tools/ground/`). None of it came from a source; all of it was tested in Godot 4.7 under the beach light from the fixed 45° game camera. The approved result is the dry-sand texture (`sand_dry.py`, 8 m tile, 2048², 256 px/m).
+
+### Process: focus beats batch, and thumbnails lie
+
+- **Making six materials at once produced generic noise.** The first pass painted six ground textures in one sweep (sands, lawn, meadow, path). It passed every numeric check and was rejected as "unacceptably bad". The textures were procedural camouflage and carpet: no designed detail, no idea of what a painter would put there. The same tooling, pointed at one material with a written design brief and about ten full-size critique passes, was approved. It is the same lesson as the hero tree: quality came from attention on one subject.
+- **Judge at the game camera, at full resolution, with context.** 400×300 contact-sheet cells and flat 2×2 tiles hid every important failure. What caught them:
+  - a 1600×900 render with the hero tree and a 1.7 m capsule for scale,
+  - four fixed framings: front-lit, back-lit, a 3.5 m close-up, and a 30 m wide shot,
+  - 1:1 crops of the texture itself.
+- **The 30 m wide shot is the repeat detector.** Every tiling problem (blotch grids, stamped patches, props repeating) was invisible at the game camera and obvious at 30 m.
+
+### Light: author albedo for the engine, and bake relief with the real sun
+
+- **The lit scene multiplies albedo by about 1.6 and warms it.** That comes from the beach sun at energy 1.35 with colour (1, 0.91, 0.79), plus 0.35 ambient. Textures that looked right in an image viewer came out pale-yellow (sand) and orange (dirt) in game. The dry-sand base albedo that reads as the style bible's `sand_light` in game is **#D6C8AE**, noticeably greyer and cooler than the target. A palette check on the albedo cannot catch this. Colour has to be measured in the lit render, not the texture.
+- **Paint relief, not noise.** The breakthrough was the same idea that made the tree work: forms with light and shadow families. The painter now builds a tileable height field (gentle mounds, weak hummocks, wind-ripple fields). It lights that field with the scene's actual sun into three posterized bands (warm lit, base, lavender shade) with brush-noise-jittered edges, which is the same model as the runtime toon `light()`, so baked and live shading agree.
+- **Mapping the sun into texture space.** Ground UV is world (x, z) / tile size, with image +x = world +x and image +y = world +z. The Godot to-sun vector (−0.452, 0.616, 0.645) therefore becomes image-space light from (−0.57, +0.82), elevation sin = 0.616. Cast shadows in the texture fall right and up.
+- **Caveat.** Baked relief is only correct for a fixed sun and world-aligned, unrotated UVs. A day/night cycle or rotated ground UVs would break it, and would need the relief as a normal/height map lit at runtime instead.
+
+### Brushwork: follow form where there is form
+
+- Strokes that follow the height field's contours describe ripples and mound sides beautifully. On nearly flat sand, the same rule follows random micro-contours and the ground looks **furry**.
+- The fix is what a painter does. Where the slope is low, drag every stroke in one consistent, slowly wandering direction (a dry-brush pass), slightly lighter or darker than the ground (±2.5–5%), long and thin (7–18 cm × 1–3 cm). Only follow contours where form exists: inside ripple fields, or slopes above about 0.35.
+
+### Wind ripples that don't look procedural
+
+- **One sine train looks like corduroy.** Two trains a few degrees apart (9° here), with slightly different wavelengths (72 and 81 cycles per 8 m tile) and weights (1.0 and 0.55), interfere into the forks and pinch-offs of real ripple fields. Integer wave vectors keep them exactly tileable.
+- **Profile and meander.** `sin(q) + 0.35·sin(2q + 0.6)` gives a steep lee and a gentle stoss side. A multi-octave warp of about ±1.3 cycles (at 3, 5 and 8 cycles per tile) makes them meander.
+- **The shape of the ripple-field mask decides whether it looks painted or stamped.**
+  - A mask from 1–2 cycles-per-tile noise makes one diagonal band per tile, which repeats as stripes.
+  - A single mid-frequency band gives stamped ovals, like repeated fingerprints.
+  - What works: a multi-scale shape (1, 2, 3, 5 cycles), a low-coverage threshold (smoothstep 0.55–0.85), and strength modulated inside the field so ripples fade in and out.
+- **Numbers.** Ripple amplitude about 1 cm on a 10 cm wavelength. The shade band starts at N·L < 0.48, so only lee faces go lavender; lower thresholds let weak hummocks make grey smudges.
+
+### Tiling: keep only non-distinct detail in the tile
+
+- **Any distinct feature betrays the repeat.** Pebble groups, a shell or one pale blotch show up at exactly the tile period. Designed props looked lovely in the tile and had to come out of it.
+- **Keep them as props instead.** The pebble, shell and twig painters are kept for the scatterer's small-props/decal layer, placed per world position.
+- **Tile scale.** Big colour variation (1–8 m) belongs to a world-space ground shader, not the tile; inside the tile, macro contrast stays tiny (8×8 block-mean std about 0.4 L*). An 8 m tile at 2048² (256 px/m) was a good trade for sand at this camera.
+
+### Small props for a 45° camera at 8 m
+
+- **Matte stones: no glint.** Build them as a shadow-coloured body, then re-paint the body shifted toward the light, leaving a lavender crescent on the far side. Add a broad subtle lit patch and a thin crisp cast-shadow sliver. A specular dot makes pebbles read as glass beads or pearls.
+- **Illustrator edges.** Anti-aliased filled polygons (supersampled) read as drawn props. Soft radial dabs read as dirt.
+- **Exaggerate scale by roughly 1.5–2×.** True-scale 2–3 cm pebbles are 3–5 px from the game camera. At about 6–10 cm they read. Painters do the same.
+
+### Tooling notes
+
+- **Route comparison for tileable painterly ground.**
+  - Material Maker's stylized sand: airbrushed clouds that repeat visibly from 30 m.
+  - Z-Image concepts: painted in side perspective, unusable as top-down ground.
+  - A custom numpy painter on a torus: exact tiling by construction, locked to the palette, about 5 s per 2048² texture. It won.
+- **Periodic noise from cosines needs many terms.** Sums of integer-frequency cosines are exactly tileable, but with about 6 terms per octave they show directional banding. About 14–16 is isotropic enough.
+- **Give each layer its own random stream.** Otherwise tuning one layer reshuffles everything after it, and a critique loop can't compare like with like.
+- **Checks are floors, not goals.** Two lessons from the checker itself:
+  - A seam metric must compare each axis with its own neighbour-step statistics. Mixing them made the directional ripple texture fail falsely.
+  - A "brushwork" contrast floor tuned on noisy textures rejects deliberately calm designs. Per-material floors, documented next to the design brief, are honest. The number should only guard against a pure airbrush; the eye judges the rest at 1:1.
+
+**Update (dune sand, same day).**
+- **Macro flattening.** A texture where one feature covers parts of the tile and not others (rippled vs wind-scoured sand) averages to different brightness in those zones, and that reads as an 8 m checker from 30 m even when every local detail is good. A reliable fix is to take a periodic (FFT) Gaussian low-pass of the luminance (σ ≈ 25 cm here) and scale each pixel toward the tile mean by the ratio. That keeps all local detail and removes only the large-scale variation, which belongs to the world-space ground shader anyway. It is `flatten_macro()` in `tools/ground/ground_brush.py`.
+- **Dune ripples.** Ripple fields covering most of the ground look like woodgrain unless the warp is low-frequency and large (about ±3.5 cycles at 1–3 cycles per tile), so the ripples sweep around implied topography rather than wobble.
+
+**Update (meadow ground, same day).**
+Clump-scale forms are where textures most easily turn into something else. Three failures in a row, each identifiable by what it looked like:
+- **Band-limited noise at tussock scale** (20–40 cycles per tile) makes labyrinth ridges, like a topographic map or brain coral.
+- **Discrete clumps of even size with high-contrast lit tops** read as leopard spots from the game camera.
+- **Overlapping clumps combined with `max()`** leave crisp creases that the lighting turns into cell outlines, like moss or lichen.
+
+What worked:
+- Many clumps (radius skewed so many are small and a few big), combined as a smooth union `1 − exp(−k·Σ bumps)`.
+- Soft, wide light bands.
+- Directional blade strokes (6–12 cm, leaning with the wind, ±5–14% value) strong enough that the grain of the grass carries the read, with the clumps only as soft masses underneath.
+- For tree-vs-ground separation, the ground green sits warmer and lighter (base #7B9C58) than the canopy mid-tone (~#528C4D).
