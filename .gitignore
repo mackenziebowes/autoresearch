@@ -6,3 +6,7 @@ target/
 .DS_Store
 .idea/
 .vscode/
+
+# Impeccable design hook: local state
+.impeccable/hook.cache.json
+.impeccable/config.local.json

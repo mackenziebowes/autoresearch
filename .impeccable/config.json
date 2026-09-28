@@ -1,0 +1,17 @@
+{
+  "detector": {
+    "ignoreRules": [],
+    "ignoreFiles": [],
+    "ignoreValues": [
+      {
+        "rule": "side-tab",
+        "value": "*",
+        "files": [
+          "viewer/style/main.css"
+        ],
+        "createdAt": "2026-09-28T01:34:44.882Z",
+        "reason": "Blockquote left border in rendered markdown is the conventional quote marker, not a card accent"
+      }
+    ]
+  }
+}
