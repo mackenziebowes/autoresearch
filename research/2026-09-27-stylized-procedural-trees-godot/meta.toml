@@ -1,0 +1,5 @@
+title = "Stylized procedural trees for Godot"
+date = 2026-09-27
+tags = ["gamedev", "godot", "blender", "geometry-nodes", "procedural", "foliage", "stylized", "shaders", "evals"]
+status = "complete"
+summary = "Painterly Ghibli-style trees should come from one JSON-driven Blender Geometry Nodes generator (SDF-fused blob core, card fringe, proxy normals, baked wind data), not image-to-3D, evaluated by cheap geometric gates before embeddings and pairwise VLM judging. Includes a 2026-09-28 addendum with build-tested numbers and failure modes."
