@@ -1,6 +1,6 @@
 title = "Who is getting funded, and for what, in the AI agent space"
 date = 2026-09-29
-tags = ["ai-agents", "venture-capital", "funding", "market", "adoption", "startups"]
+tags = ["ai-agents", "venture-capital", "funding", "market", "adoption", "startups", "coding-agents", "vertical-ai", "agent-infrastructure"]
 # draft | running | complete | abandoned
-status = "running"
-summary = "In progress: funding rounds, VC theses and user-adoption signals across coding, vertical, infrastructure and consumer AI agents, Oct 2025–Sep 2026."
+status = "complete"
+summary = "Coding agents are the only category where VC money and proven user demand clearly agree, though the labs' own agents (Claude Code, Codex) increasingly out-earn independents. VCs pay 50–100x ARR for outcome-priced vertical agents (CX, legal) and metered agent infra while broad enterprise scaling sits near 23%, and consumer agents show real grassroots pull that the labs, not startups, capture."
