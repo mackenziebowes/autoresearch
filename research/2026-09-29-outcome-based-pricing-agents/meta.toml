@@ -1,6 +1,6 @@
 title = "Who is winning on outcome-based pricing for AI agents, and does cheap verification explain it"
 date = 2026-09-29
-tags = ["ai-agents", "pricing", "outcome-based-pricing", "verification", "economics", "customer-support"]
+tags = ["ai-agents", "pricing", "outcome-based-pricing", "verification", "economics", "customer-support", "contract-theory"]
 # draft | running | complete | abandoned
-status = "running"
-summary = "In progress: which AI agent vendors are winning with per-outcome pricing, what counts as an outcome, and whether how cheaply outputs can be verified explains where it works."
+status = "complete"
+summary = "Outcome pricing is proven only in customer support (Fin, Sierra, Zendesk, HubSpot) plus pre-existing contingency markets (recruiting, revenue-cycle recovery, PI legal), and even there it is a minority choice; Salesforce paid ~9x ARR for Fin vs ~100x for Sierra. Refines the earlier run's hypothesis: 'countability' (cheap, two-party, auditable, low-stakes events) predicts the billing unit, while ML-style verifiability predicts capability and demand — which is why coding leads demand but bills on usage."
